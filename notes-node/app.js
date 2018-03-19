@@ -1,18 +1,37 @@
-console.log('starting app');
+console.log('starting app\n');
 
 const fs = require('fs');
 const os = require('os');
+
 const _ = require('lodash');
+const yargs = require('yargs');
+
 const notes = require('./notes');
 
-let res = notes.add(9, -2);
+const appInputArgs = yargs.argv;
+const command = appInputArgs._[0];
+console.log(`This app's input arguments are:  ${process.argv}\n`);
+console.log(`This app's user-specified input arguments are:  ${_.join(_.drop(process.argv, 2), ', ')}\n`);
+console.log('Yargs:  ', appInputArgs, '\n');
 
-console.log(`true ${_.isString(true) ? 'is' : 'is not'} a string`);
-console.log(`'Andrew' ${_.isString('Andrew') ? 'is' : 'is not'} a string`);
-
-let filteredArray = _.uniq(['Anthony', 1, 'Anthony', 2, 3, 4]);
-console.log(`Filtered array:  ${filteredArray}`);
-
-// let user = os.userInfo();
-//
-// fs.appendFile('greetings.txt', `Hello ${user.username}! You are ${notes.age}.`, err => { if(err) console.log(err) });
+switch(command){
+    case 'add':
+        console.log('Adding new note');
+        notes.addNote(appInputArgs.title, appInputArgs.body);
+        break;
+    case 'list':
+        console.log('Listing all notes');
+        notes.getAll();
+        break;
+    case 'read':
+        console.log('fetching note');
+        notes.getNote(appInputArgs.title);
+        break;
+    case 'remove':
+        console.log('Removing note');
+        notes.removeNote(appInputArgs.title);
+        break;
+    default:
+        console.log('Input command not recognized');
+        break;
+}

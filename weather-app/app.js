@@ -1,5 +1,6 @@
-const request = require('request');
 const yargs = require('yargs');
+const geocode = require('./geocode/geocode.js');
+const weather = require('./weather/weather.js');
 
 const userInput = yargs
     .options({
@@ -14,19 +15,24 @@ const userInput = yargs
     .alias('help', 'h')
     .argv;
 
-let address = userInput.address;
-let addressQueryString = encodeURIComponent(address);
+console.log(`\nGetting weather for ${userInput.address}:\n`);
 
-console.log(`\nGetting weather for ${address}:\n`);
+let longitude = null;
+let latitude = null;
 
-//Go to http://links.mead.io/api-fix if receiving OVER_QUERY_LIMIT error
-request({
-    url: 'http://maps.googleapis.com/maps/api/geocode/json?address=' + addressQueryString,
-    json: true
-}, (error, response, body) => {
-    error
-        ? console.log(error)
-        : console.log(`Address: ${body.results[0].formatted_address}\n` +
-        `Latitude: ${body.results[0].geometry.location.lat}\n` +
-        `Longitude: ${body.results[0].geometry.location.lng}\n`);
+geocode.geocodeAddress(userInput.address, (errorMessage, results) => {
+    if(errorMessage)
+         console.log('Unable to connect to Google servers.');
+    else {
+        latitude = results.latitude;
+        longitude = results.longitude;
+        console.log(`Address: ${results.address}\n` +
+            `Latitude: ${latitude}\n` +
+            `Longitude: ${longitude}\n`);
+        weather.getWeather(latitude, longitude, (errorMessage, results) => {
+            if(errorMessage)
+                console.log('Unable to connect to darksky.net.')
+            else
+                console.log(`It is ${results.temperature}ºF, but if feels like ${results.actualTemperature}`);
+    })}
 });

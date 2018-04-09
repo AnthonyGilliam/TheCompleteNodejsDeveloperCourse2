@@ -1,7 +1,6 @@
 const request = require('request');
 
 const geocodeAddress = (address, callback) => {
-    let addressQueryString = encodeURIComponent(address);
 
     //Go to http://links.mead.io/api-fix if receiving OVER_QUERY_LIMIT error
     request(

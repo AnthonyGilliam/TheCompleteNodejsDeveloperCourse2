@@ -16,7 +16,7 @@ app.use((req, res, next) =>{
 });
 
 //Un-comment when the site is under maintenance to block all requests
-// app.use((req, res, next) =>{
+// app.use((req, res, next) => {
 //     res.render('maintenance.hbs');
 // });
 

@@ -12,12 +12,11 @@ async function main()
 
         const db = server.db(databaseName);
 
-        let updatedData = await db.collection('tasks').updateMany(
-            { completed: false },
-            { $set: { "completed": true } }
+        let deleteData = await db.collection('tasks').deleteOne(
+            { description : 'Grab hookah bag' }
         );
 
-        console.log(updatedData);
+        console.log(deleteData);
     } catch (error) {
         console.error(error);
     }
